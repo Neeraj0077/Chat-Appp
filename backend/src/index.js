@@ -1,38 +1,38 @@
 import express from "express";
 import dotenv from "dotenv";
+dotenv.config();
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import router from "./routes/auth.route.js";
 import messageRoute from "./routes/message.route.js";
 import { connectDB } from "./lib/db.js";
-import { app, server } from "./lib/socket.js"; // ← app and server come from here
-import path from 'path'
+import { app, server } from "./lib/socket.js";
+import path from "path";
 
-dotenv.config();
-const _dirname = path.resolve();
+const __dirname = path.resolve();
 
-app.use(express.json({ limit: "10mb" }));
-app.use(express.urlencoded({ limit: "10mb", extended: true }));
-app.use(cookieParser());
+// ← CORS must be before everything else
 app.use(cors({
     origin: "http://localhost:5173",
     credentials: true,
 }));
 
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ limit: "10mb", extended: true }));
+app.use(cookieParser());
+
 app.use("/api/auth", router);
-app.use("/api/messages", messageRoute); // ← only once, remove duplicate
+app.use("/api/messages", messageRoute);
 
-const isProduction = "production";
+if (process.env.NODE_ENV === "production") {
+    app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
-if(isProduction){
-    app.use(express.static(path.join(_dirname, "../frontend/dist")));
-
-    app.get("*", (req, res) => {
-        res.sendFile(path.join(_dirname, "..frontend/dist/index.html"));
+    app.get("/{*path}", (req, res) => {
+        res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
     });
 }
 
-server.listen(3000, () => {
-    console.log("Server running on port 3000");
+server.listen(process.env.PORT || 3000, () => {
+    console.log("Server running on port", process.env.PORT || 3000);
     connectDB();
 });

@@ -42,21 +42,25 @@ export const useAuthStore = create((set, get) => ({
   //   }
   // },
   signup: async (data) => {
-    console.log("Sending data:", data);
     set({ isSigningUp: true });
     try {
+      console.log("Signup data being sent:", data); // ← add this
       const res = await axiosInstance.post("/auth/signup", data);
       set({ authUser: res.data });
       toast.success("Account created successfully");
       get().connectSocket();
     } catch (error) {
-      console.log("Full error response:", error.response.data); // ← add this
-      toast.error(error.response.data.message);
+      console.log("Full error object:", error); // ← add this
+      console.log("Error response:", error.response); // ← add this
+      const message = error.response?.data?.error
+        || error.response?.data?.message
+        || error.message
+        || "Something went wrong";
+      toast.error(message);
     } finally {
       set({ isSigningUp: false });
     }
   },
-
   // login: async (data) => {
   //   set({ isLoggingIn: true });
   //   try {

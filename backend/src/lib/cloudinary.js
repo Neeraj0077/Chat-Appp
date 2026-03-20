@@ -8,7 +8,5 @@ cloudinary.config({
     api_secret: "C0LTP7oIt3bulWpGmtSwMxabHYU"
 });
 
-console.log("Cloudinary config:", cloudinary.config());
-
 export default cloudinary;
 
