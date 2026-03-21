@@ -70,7 +70,7 @@ const SignUpPage = () => {
                   onChange={(e) => setFormData({ ...formData, fullname: e.target.value })}
                 />
               </div>
-            </div>
+            </div>  
 
             <div className="form-control">
               <label className="label">

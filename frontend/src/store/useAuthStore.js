@@ -17,7 +17,6 @@ export const useAuthStore = create((set, get) => ({
   checkAuth: async () => {
     try {
       const res = await axiosInstance.get("/auth/check");
-
       set({ authUser: res.data });
       get().connectSocket();
     } catch (error) {
@@ -28,30 +27,14 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
-  // signup: async (data) => {
-  //   set({ isSigningUp: true });
-  //   try {
-  //     const res = await axiosInstance.post("/auth/signup", data);
-  //     set({ authUser: res.data });
-  //     toast.success("Account created successfully");
-  //     get().connectSocket();
-  //   } catch (error) {
-  //     toast.error(error.response.data.message);
-  //   } finally {
-  //     set({ isSigningUp: false });
-  //   }
-  // },
   signup: async (data) => {
     set({ isSigningUp: true });
     try {
-      console.log("Signup data being sent:", data); // ← add this
       const res = await axiosInstance.post("/auth/signup", data);
       set({ authUser: res.data });
       toast.success("Account created successfully");
       get().connectSocket();
     } catch (error) {
-      console.log("Full error object:", error); // ← add this
-      console.log("Error response:", error.response); // ← add this
       const message = error.response?.data?.error
         || error.response?.data?.message
         || error.message
@@ -61,22 +44,7 @@ export const useAuthStore = create((set, get) => ({
       set({ isSigningUp: false });
     }
   },
-  // login: async (data) => {
-  //   set({ isLoggingIn: true });
-  //   try {
-  //     const res = await axiosInstance.post("/auth/login", data);
-  //     set({ authUser: res.data });
-  //     toast.success("Logged in successfully");
-
-  //     get().connectSocket();
-  //   } catch (error) {
-  //     toast.error(error.response.data.message);
-  //   } finally {
-  //     set({ isLoggingIn: false });
-  //   }
-  // },
-
-  // useAuthStore.js
+  
   login: async (data) => {
     set({ isLoggingIn: true });
     try {
