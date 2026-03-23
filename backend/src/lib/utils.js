@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
-
-const jwt_secret = "neerajjwt";
+import dotenv from "dotenv";
+dotenv.config();
+const jwt_secret = process.env.JWT_SECRET;
 
 export const generateToken = (userId, res) => {
     const token = jwt.sign(
