@@ -13,7 +13,6 @@ const userSchema = new mongoose.Schema({
     password: {
         type: mongoose.Schema.Types.Mixed,
         required: true,
-        unique: true,
         minlength: 6,
         maxlength: 50,
     },
@@ -21,6 +20,18 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: "",
     },
+    friends: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+    }],
+    friendRequestsSent: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+    }],
+    friendRequestsReceived: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+    }],
 },
     {
         timestamps: true,

@@ -26,12 +26,10 @@ function validatePassword(password) {
         throw new Error("Password must be between 6 and 50 characters");
     }
 }
-
-// ─── Controllers ─────────────────────────────────────────────────────────────
-
+   
 export const signup = async (req, res) => {
     const { fullname, email, password } = req.body;
-    // 1. Validate inputs
+ 
     try {
         validateFullName(fullname);
         validateEmail(email);
@@ -41,22 +39,14 @@ export const signup = async (req, res) => {
     }
 
     try {
-        // // 2. Check if username is taken
-        // const existingUsername = await User.findOne({ username });
-        // if (existingUsername) {
-        //     return res.status(400).json({ error: "Username is already taken" });
-        // }
-
-        // 3. Check if email is already registered
+ 
         const existingEmail = await User.findOne({ email });
         if (existingEmail) {
             return res.status(400).json({ error: "Email is already registered" });
         }
-
-        // 4. Hash password
+ 
         const hashedPassword = await bcrypt.hash(password, 10);
-
-        // 5. Create and save user
+ 
         const newUser = new User({
             email,
             fullname,
@@ -64,8 +54,7 @@ export const signup = async (req, res) => {
         });
 
         await newUser.save();
-
-        // 6. Generate token
+ 
         generateToken(newUser._id, res);//here we are passing the res object to set the cookie in the response.
 
         return res.status(201).json({ message: "User created successfully" });

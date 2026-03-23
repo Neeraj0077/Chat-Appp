@@ -8,10 +8,10 @@ import messageRoute from "./routes/message.route.js";
 import { connectDB } from "./lib/db.js";
 import { app, server } from "./lib/socket.js";
 import path from "path";
+import friendRoutes from "./routes/friend.route.js";
 
 const __dirname = path.resolve();
 
-// ← CORS must be before everything else
 app.use(cors({
     origin: "http://localhost:5173",
     credentials: true,
@@ -23,6 +23,7 @@ app.use(cookieParser());
 
 app.use("/api/auth", router);
 app.use("/api/messages", messageRoute);
+app.use("/api/friends", friendRoutes);
 
 if (process.env.NODE_ENV === "production") {
     app.use(express.static(path.join(__dirname, "../frontend/dist")));

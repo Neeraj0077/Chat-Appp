@@ -7,8 +7,9 @@ import { io } from "../lib/socket.js";
 export const getUsersForSidebar = async (req, res) => {
     try {
         const loggedInUserId = req.user._id;
-        const filteredUsers = await User.find({ _id: { $ne: loggedInUserId } }).select("-password");//$ne means not equal to the logged in user(us).
-        res.status(200).json(filteredUsers);  
+        // Only return friends, not all users
+        const me = await User.findById(loggedInUserId).populate("friends", "-password");
+        res.status(200).json(me.friends);
     } catch (err) {
         res.status(500).json({ error: "Internal server error" });
     }
@@ -16,12 +17,12 @@ export const getUsersForSidebar = async (req, res) => {
 
 export const getMessages = async (req, res) => {
     try {
-        const { id: userToChatId } = req.params;//just renaming the id to userToChatId for clarity.
-        const myId = req.user._id;//logged in user id from the req object which is set by the auth middleware.
+        const { id: userToChatId } = req.params;
+        const myId = req.user._id;
         const messages = await Message.find({
-            $or: [ //$or operator to find messages where either the logged in user is the sender and the userToChatId is the receiver, or vice versa.
-                { senderId: myId, receiverId: userToChatId },    
-                { senderId: userToChatId, receiverId: myId }    
+            $or: [
+                { senderId: myId, receiverId: userToChatId },
+                { senderId: userToChatId, receiverId: myId }
             ]
         });
         res.status(200).json(messages);
@@ -51,14 +52,12 @@ export const sendMessage = async (req, res) => {
 
         await newMessage.save();
 
-        const receiverSocketId = getReceiverSocketId(receiverId);  
-
-        if(receiverSocketId) {//this line is basically checking if the receiver is online by if online emit message in real time if not skipp.
-            io.to(receiverSocketId).emit("newMessage", newMessage); 
+        const receiverSocketId = getReceiverSocketId(receiverId);
+        if (receiverSocketId) {
+            io.to(receiverSocketId).emit("newMessage", newMessage);
         }
 
-        res.status(200).json(newMessage); 
-
+        res.status(200).json(newMessage);
     } catch (err) {
         res.status(500).json({ error: "Internal server error" });
     }

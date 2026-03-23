@@ -17,7 +17,6 @@ const ChatHeader = () => {
             </div>
           </div>
 
-          {/* User info */}
           <div>
             <h3 className="font-medium">{selectedUser.fullname}</h3>
             <p className="text-sm text-base-content/70">
@@ -25,8 +24,7 @@ const ChatHeader = () => {
             </p>
           </div>
         </div>
-
-        {/* Close button */}
+ 
         <button onClick={() => setSelectedUser(null)}>
           <X />
         </button>
