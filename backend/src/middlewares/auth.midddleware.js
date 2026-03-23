@@ -1,5 +1,9 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/user.model.js';
+import dotenv from "dotenv";
+dotenv.config();
+
+const jwt_secret = process.env.JWT_SECRET;
 
 export const protectRoute = async (req,res,next) =>{
     try{
@@ -9,7 +13,7 @@ export const protectRoute = async (req,res,next) =>{
         return res.status(401).json({ error: "Unauthorized access, token missing" });
     }
 
-    const decoded = jwt.verify(token, "neerajjwt");
+    const decoded = jwt.verify(token, jwt_secret);
 
     if(!decoded){
         return res.status(401).json({ error: "Unauthorized access, invalid token" });

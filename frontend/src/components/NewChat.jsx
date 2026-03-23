@@ -51,9 +51,9 @@ const NewChat = ({ onClose, onSelectUser }) => {
           <button
             key={user._id}
             onClick={() => { onSelectUser(user); handleClose(); }}
-            className="w-full p-3 flex items-center gap-3 hover:bg-[#2a2d3e] transition-colors"
+            className="w-full p-3 flex items-center gap-3 hover:bg-[#2a2d3e] transition-colors cursor-pointer"
           >
-            <div className="relative mx-auto lg:mx-0 shrink-0">
+            <div className="relative mx-auto lg:mx-0 shrink-0 cursor-pointer">
               <img
                 src={user.profilePic || "/avatar.png"}
                 alt={user.fullname}

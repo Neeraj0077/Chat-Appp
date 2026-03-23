@@ -35,16 +35,16 @@ const AddFriends = ({ onClose }) => {
             case "received":
                 return (
                     <span className="flex items-center gap-1 text-xs text-blue-400 font-medium px-3 py-1.5 rounded-full bg-blue-400/10">
-                        <UserX className="size-3.5" /> Check Requests
+                        <UserX className="size-3.5 cursor-pointer" /> Check Requests
                     </span>
                 );
             default:
                 return (
                     <button
                         onClick={() => sendFriendRequest(user._id)}
-                        className="flex items-center gap-1 text-xs text-white font-medium px-3 py-1.5 rounded-full bg-[#5754E8] hover:bg-[#4a47d4] transition-colors"
+                        className="flex items-center gap-1 text-xs text-white font-medium px-3 py-1.5 rounded-full bg-[#5754E8] hover:bg-[#4a47d4] transition-colors cursor-pointer"
                     >
-                        <UserPlus className="size-3.5" /> Add
+                        <UserPlus className="size-3.5 cursor-pointer" /> Add
                     </button>
                 );
         }
@@ -60,7 +60,7 @@ const AddFriends = ({ onClose }) => {
                         <X className="size-5" />
                     </button>
                 </div>
- 
+
                 <div className="p-4">
                     <div className="relative">
                         <Search className="absolute left-3 top-2.5 size-4 text-gray-400" />
@@ -74,7 +74,7 @@ const AddFriends = ({ onClose }) => {
                         />
                     </div>
                 </div>
- 
+
                 <div className="overflow-y-auto flex-1 px-2 pb-4">
                     {isSearching ? (
                         <div className="flex justify-center py-8">

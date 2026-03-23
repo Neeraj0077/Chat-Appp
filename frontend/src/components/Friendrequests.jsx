@@ -33,9 +33,9 @@ const FriendRequests = () => {
 
             <button
                 onClick={() => setOpen((prev) => !prev)}
-                className="relative p-2 rounded-full hover:bg-white/10 transition-colors"
+                className="relative p-2 rounded-full hover:bg-white/10 transition-colors cursor-pointer"
             >
-                <Bell className="size-5 text-gray-300" />
+                <Bell className="size-5 cursor-pointer" />
                 {friendRequests.length > 0 && (
                     <span className="absolute -top-0.5 -right-0.5 size-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
                         {friendRequests.length > 9 ? "9+" : friendRequests.length}
