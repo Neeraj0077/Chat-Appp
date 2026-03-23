@@ -1,7 +1,9 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv";
+dotenv.config();
 export const connectDB = async () => {
     try {
-        await mongoose.connect("mongodb+srv://neerajsv964:6Og6psBJqIe6CNR6@cluster0.3hpltcz.mongodb.net/ChatApp?retryWrites=true&w=majority");
+        await mongoose.connect(process.env.MONGO_URL);
         console.log("MongoDB connected successfully");
     } catch (err) {
         console.log("MongoDB connection error:", err);

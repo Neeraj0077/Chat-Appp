@@ -1,6 +1,14 @@
 import express from "express";
 import dotenv from "dotenv";
 dotenv.config();
+
+console.log("ENV TEST:", {
+    PORT: process.env.PORT,
+    MONGO_URL: process.env.MONGO_URL ? "loaded" : "undefined",
+    JWT_SECRET: process.env.JWT_SECRET ? "loaded" : "undefined",
+});
+
+
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import router from "./routes/auth.route.js";
