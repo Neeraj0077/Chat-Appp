@@ -26,10 +26,10 @@ function validatePassword(password) {
         throw new Error("Password must be between 6 and 50 characters");
     }
 }
-   
+
 export const signup = async (req, res) => {
     const { fullname, email, password } = req.body;
- 
+
     try {
         validateFullName(fullname);
         validateEmail(email);
@@ -39,14 +39,14 @@ export const signup = async (req, res) => {
     }
 
     try {
- 
+
         const existingEmail = await User.findOne({ email });
         if (existingEmail) {
             return res.status(400).json({ error: "Email is already registered" });
         }
- 
+
         const hashedPassword = await bcrypt.hash(password, 10);
- 
+
         const newUser = new User({
             email,
             fullname,
@@ -54,7 +54,7 @@ export const signup = async (req, res) => {
         });
 
         await newUser.save();
- 
+
         generateToken(newUser._id, res);//here we are passing the res object to set the cookie in the response.
 
         return res.status(201).json({ message: "User created successfully" });
@@ -126,6 +126,7 @@ export const updateProfile = async (req, res) => {
 
         res.status(200).json(updatedUser);
     } catch (err) {
+        console.error("Profile update error:", err.message);
         res.status(500).json({ error: "Internal server error" });
     }
 };
@@ -134,7 +135,8 @@ export const checkAuth = (req, res) => {
     try {
         res.status(200).json(req.user); // ← return user directly
     } catch (err) {
-        res.status(500).json({ error: "Internal server error" });
+        console.error("Cloudinary upload error:", err)
+        res.status(500).json({ error: err.message });
     }
 };
 
