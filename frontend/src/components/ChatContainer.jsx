@@ -185,7 +185,7 @@ const ChatContainer = () => {
                   <span className="inline">
                     {message.text}
                     {isMine && (
-                      <span className="inline-flex items-end ml-1.5 translate-y-[2px]">
+                      <span className="inline-flex items-end ml-1.5 translate-y-0.5">
                         <MessageStatus status={message.status} />
                       </span>
                     )}

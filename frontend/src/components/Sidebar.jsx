@@ -6,7 +6,7 @@ import SidebarSkeleton from "./skeletons/SidebarSkeleton";
 import MessageStatus from "./Messagestatus";
 import { MessageSquarePlus, EllipsisVertical, Search } from "lucide-react";
 import NewChat from "./NewChat";
-import FriendRequests from "./FriendRequests";
+import FriendRequests from "./Friendrequests";
 
 const Sidebar = () => {
   const { getUsers, users = [], selectedUser, setSelectedUser, isUsersLoading, unreadCounts, lastMessages } = useChatStore();
