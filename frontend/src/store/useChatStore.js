@@ -1,7 +1,9 @@
+ 
 // import { create } from "zustand";
 // import toast from "react-hot-toast";
 // import { axiosInstance } from "../lib/axios";
 // import { useAuthStore } from "./useAuthStore";
+// import { useSound } from "../hooks/useSound";
 
 // export const useChatStore = create((set, get) => ({
 //   messages: [],
@@ -73,26 +75,29 @@
 //     if (!selectedUser) return;
 
 //     const socket = useAuthStore.getState().socket;
+//     const { playMessageSound } = useSound();
 
 //     socket.on("newMessage", (newMessage) => {
 //       const isFromSelectedUser = newMessage.senderId === selectedUser._id;
 
 //       if (isFromSelectedUser) {
-//         // Chat is open — add message and immediately mark as seen
+//         // Chat is open — mark as seen instantly + play sound
 //         const seenMessage = { ...newMessage, status: "seen" };
 //         set({ messages: [...get().messages, seenMessage] });
+//         playMessageSound();
 
-//         // Tell backend + sender that message was seen instantly
+//         // Tell backend + sender messages were seen
 //         axiosInstance.get(`/messages/${selectedUser._id}`).catch(() => {});
 
 //       } else {
-//         // Chat is not open — increment unread
+//         // Chat not open — increment unread + play sound
 //         set((state) => ({
 //           unreadCounts: {
 //             ...state.unreadCounts,
 //             [newMessage.senderId]: (state.unreadCounts[newMessage.senderId] || 0) + 1,
 //           },
 //         }));
+//         playMessageSound();
 //       }
 
 //       get()._updateLastMessageAndSort(newMessage.senderId, newMessage);
@@ -108,7 +113,6 @@
 //           ),
 //         }));
 
-//         // Also update the lastMessages tick in sidebar to seen
 //         const { lastMessages } = get();
 //         const lastMsg = lastMessages[selectedUser._id];
 //         if (lastMsg) {
@@ -178,6 +182,7 @@ export const useChatStore = create((set, get) => ({
   isMessagesLoading: false,
   unreadCounts: {},
   lastMessages: {},
+  isTyping: false, // is the selected user typing?
 
   getUsers: async () => {
     set({ isUsersLoading: true });
@@ -187,9 +192,7 @@ export const useChatStore = create((set, get) => ({
 
       const lastMessages = {};
       users.forEach((u) => {
-        if (u.lastMessage) {
-          lastMessages[u._id] = u.lastMessage;
-        }
+        if (u.lastMessage) lastMessages[u._id] = u.lastMessage;
       });
 
       const sorted = [...users].sort((a, b) => {
@@ -212,7 +215,6 @@ export const useChatStore = create((set, get) => ({
       const res = await axiosInstance.get(`/messages/${userId}`);
       const messages = Array.isArray(res.data) ? res.data : res.data.messages || [];
       set({ messages });
-
       set((state) => ({
         unreadCounts: { ...state.unreadCounts, [userId]: 0 },
       }));
@@ -246,16 +248,11 @@ export const useChatStore = create((set, get) => ({
       const isFromSelectedUser = newMessage.senderId === selectedUser._id;
 
       if (isFromSelectedUser) {
-        // Chat is open — mark as seen instantly + play sound
         const seenMessage = { ...newMessage, status: "seen" };
-        set({ messages: [...get().messages, seenMessage] });
+        set({ messages: [...get().messages, seenMessage, ], isTyping: false });
         playMessageSound();
-
-        // Tell backend + sender messages were seen
         axiosInstance.get(`/messages/${selectedUser._id}`).catch(() => {});
-
       } else {
-        // Chat not open — increment unread + play sound
         set((state) => ({
           unreadCounts: {
             ...state.unreadCounts,
@@ -268,7 +265,19 @@ export const useChatStore = create((set, get) => ({
       get()._updateLastMessageAndSort(newMessage.senderId, newMessage);
     });
 
-    // When receiver sees our messages → update all to seen in UI
+    // Typing events — only show if from the currently selected user
+    socket.on("typing", ({ from }) => {
+      if (from === selectedUser._id) {
+        set({ isTyping: true });
+      }
+    });
+
+    socket.on("stopTyping", ({ from }) => {
+      if (from === selectedUser._id) {
+        set({ isTyping: false });
+      }
+    });
+
     socket.on("messagesSeen", ({ by }) => {
       const { selectedUser } = get();
       if (selectedUser && by === selectedUser._id) {
@@ -294,6 +303,9 @@ export const useChatStore = create((set, get) => ({
     const socket = useAuthStore.getState().socket;
     socket.off("newMessage");
     socket.off("messagesSeen");
+    socket.off("typing");
+    socket.off("stopTyping");
+    set({ isTyping: false });
   },
 
   _updateLastMessageAndSort: (userId, message) => {
@@ -311,11 +323,9 @@ export const useChatStore = create((set, get) => ({
 
       const sorted = [...state.users].sort((a, b) => {
         const aTime = updatedLastMessages[a._id]?.createdAt
-          ? new Date(updatedLastMessages[a._id].createdAt)
-          : new Date(0);
+          ? new Date(updatedLastMessages[a._id].createdAt) : new Date(0);
         const bTime = updatedLastMessages[b._id]?.createdAt
-          ? new Date(updatedLastMessages[b._id].createdAt)
-          : new Date(0);
+          ? new Date(updatedLastMessages[b._id].createdAt) : new Date(0);
         return bTime - aTime;
       });
 
@@ -324,7 +334,7 @@ export const useChatStore = create((set, get) => ({
   },
 
   setSelectedUser: (selectedUser) => {
-    set({ selectedUser });
+    set({ selectedUser, isTyping: false });
     if (selectedUser) {
       set((state) => ({
         unreadCounts: { ...state.unreadCounts, [selectedUser._id]: 0 },
