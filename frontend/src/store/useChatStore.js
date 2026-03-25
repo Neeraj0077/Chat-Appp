@@ -9,8 +9,8 @@
 //   selectedUser: null,
 //   isUsersLoading: false,
 //   isMessagesLoading: false,
-//   unreadCounts: {},   // { userId: count }
-//   lastMessages: {},   // { userId: { text, image, createdAt } }
+//   unreadCounts: {},
+//   lastMessages: {},
 
 //   getUsers: async () => {
 //     set({ isUsersLoading: true });
@@ -46,7 +46,6 @@
 //       const messages = Array.isArray(res.data) ? res.data : res.data.messages || [];
 //       set({ messages });
 
-//       // Clear unread count when opening chat
 //       set((state) => ({
 //         unreadCounts: { ...state.unreadCounts, [userId]: 0 },
 //       }));
@@ -79,8 +78,15 @@
 //       const isFromSelectedUser = newMessage.senderId === selectedUser._id;
 
 //       if (isFromSelectedUser) {
-//         set({ messages: [...get().messages, newMessage] });
+//         // Chat is open — add message and immediately mark as seen
+//         const seenMessage = { ...newMessage, status: "seen" };
+//         set({ messages: [...get().messages, seenMessage] });
+
+//         // Tell backend + sender that message was seen instantly
+//         axiosInstance.get(`/messages/${selectedUser._id}`).catch(() => {});
+
 //       } else {
+//         // Chat is not open — increment unread
 //         set((state) => ({
 //           unreadCounts: {
 //             ...state.unreadCounts,
@@ -92,16 +98,25 @@
 //       get()._updateLastMessageAndSort(newMessage.senderId, newMessage);
 //     });
 
-//     // When the receiver opens our chat → mark all our messages as seen
+//     // When receiver sees our messages → update all to seen in UI
 //     socket.on("messagesSeen", ({ by }) => {
 //       const { selectedUser } = get();
 //       if (selectedUser && by === selectedUser._id) {
-//         // Update all sent messages in current chat to "seen"
 //         set((state) => ({
 //           messages: state.messages.map((msg) =>
 //             msg.status !== "seen" ? { ...msg, status: "seen" } : msg
 //           ),
 //         }));
+
+//         // Also update the lastMessages tick in sidebar to seen
+//         const { lastMessages } = get();
+//         const lastMsg = lastMessages[selectedUser._id];
+//         if (lastMsg) {
+//           get()._updateLastMessageAndSort(selectedUser._id, {
+//             ...lastMsg,
+//             status: "seen",
+//           });
+//         }
 //       }
 //     });
 //   },
@@ -112,7 +127,6 @@
 //     socket.off("messagesSeen");
 //   },
 
-//   // Internal helper — update lastMessages map and re-sort users
 //   _updateLastMessageAndSort: (userId, message) => {
 //     set((state) => {
 //       const updatedLastMessages = {
@@ -122,6 +136,7 @@
 //           image: message.image,
 //           createdAt: message.createdAt,
 //           status: message.status,
+//           senderId: message.senderId,
 //         },
 //       };
 
@@ -153,6 +168,7 @@ import { create } from "zustand";
 import toast from "react-hot-toast";
 import { axiosInstance } from "../lib/axios";
 import { useAuthStore } from "./useAuthStore";
+import { useSound } from "../hooks/useSound";
 
 export const useChatStore = create((set, get) => ({
   messages: [],
@@ -224,26 +240,29 @@ export const useChatStore = create((set, get) => ({
     if (!selectedUser) return;
 
     const socket = useAuthStore.getState().socket;
+    const { playMessageSound } = useSound();
 
     socket.on("newMessage", (newMessage) => {
       const isFromSelectedUser = newMessage.senderId === selectedUser._id;
 
       if (isFromSelectedUser) {
-        // Chat is open — add message and immediately mark as seen
+        // Chat is open — mark as seen instantly + play sound
         const seenMessage = { ...newMessage, status: "seen" };
         set({ messages: [...get().messages, seenMessage] });
+        playMessageSound();
 
-        // Tell backend + sender that message was seen instantly
+        // Tell backend + sender messages were seen
         axiosInstance.get(`/messages/${selectedUser._id}`).catch(() => {});
 
       } else {
-        // Chat is not open — increment unread
+        // Chat not open — increment unread + play sound
         set((state) => ({
           unreadCounts: {
             ...state.unreadCounts,
             [newMessage.senderId]: (state.unreadCounts[newMessage.senderId] || 0) + 1,
           },
         }));
+        playMessageSound();
       }
 
       get()._updateLastMessageAndSort(newMessage.senderId, newMessage);
@@ -259,7 +278,6 @@ export const useChatStore = create((set, get) => ({
           ),
         }));
 
-        // Also update the lastMessages tick in sidebar to seen
         const { lastMessages } = get();
         const lastMsg = lastMessages[selectedUser._id];
         if (lastMsg) {

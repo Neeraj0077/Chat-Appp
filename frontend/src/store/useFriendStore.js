@@ -2,10 +2,11 @@ import { create } from "zustand";
 import toast from "react-hot-toast";
 import { axiosInstance } from "../lib/axios";
 import { useAuthStore } from "./useAuthStore";
+import { useSound } from "../hooks/useSound";
 
 export const useFriendStore = create((set, get) => ({
     searchResults: [],
-    friendRequests: [],  
+    friendRequests: [],
     isSearching: false,
     isLoadingRequests: false,
 
@@ -36,7 +37,6 @@ export const useFriendStore = create((set, get) => ({
     sendFriendRequest: async (userId) => {
         try {
             await axiosInstance.post(`/friends/send/${userId}`);
- 
             set((state) => ({
                 searchResults: state.searchResults.map((u) =>
                     u._id === userId ? { ...u, status: "sent" } : u
@@ -55,7 +55,6 @@ export const useFriendStore = create((set, get) => ({
                 friendRequests: state.friendRequests.filter((u) => u._id !== userId),
             }));
             toast.success("Friend request accepted!");
-            
             useAuthStore.getState().refreshFriends?.();
         } catch (err) {
             toast.error("Failed to accept request");
@@ -87,10 +86,14 @@ export const useFriendStore = create((set, get) => ({
             toast.error("Failed to cancel request");
         }
     },
- 
+
+    // Called from socket event in Sidebar
     addIncomingRequest: (user) => {
+        const { playFriendRequestSound } = useSound();
         set((state) => ({
             friendRequests: [...state.friendRequests, user],
         }));
+        // Play chime sound for friend request
+        playFriendRequestSound();
     },
 }));

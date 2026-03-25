@@ -129,7 +129,7 @@ const Sidebar = () => {
                       </span>
                     )}
                     {preview ? (
-                      <span className={`text-xs truncate max-w-[140px] ${unread > 0 ? "text-white font-medium" : "text-zinc-400"}`}>
+                      <span className={`text-xs truncate max-w-35 ${unread > 0 ? "text-white font-medium" : "text-zinc-400"}`}>
                         {preview}
                       </span>
                     ) : (
@@ -139,7 +139,7 @@ const Sidebar = () => {
 
                   {/* Unread badge */}
                   {unread > 0 && (
-                    <span className="shrink-0 min-w-[20px] h-5 px-1.5 bg-[#5754E8] text-white text-[11px] font-bold rounded-full flex items-center justify-center">
+                    <span className="shrink-0 min-w-5 h-5 px-1.5 bg-[#5754E8] text-white text-[11px] font-bold rounded-full flex items-center justify-center">
                       {unread > 99 ? "99+" : unread}
                     </span>
                   )}
