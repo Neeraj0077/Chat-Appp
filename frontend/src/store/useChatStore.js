@@ -93,7 +93,6 @@ export const useChatStore = create((set, get) => ({
             ...state.unreadCounts,
             [newMessage.senderId]: (state.unreadCounts[newMessage.senderId] || 0) + 1,
           },
-          // clear typing for that user when message arrives
           typingUsers: { ...state.typingUsers, [newMessage.senderId]: false },
         }));
         playMessageSound();
@@ -102,7 +101,6 @@ export const useChatStore = create((set, get) => ({
       get()._updateLastMessageAndSort(newMessage.senderId, newMessage);
     });
 
-    // typing — update BOTH isTyping (for dots in chat) AND typingUsers (for sidebar)
     socket.on("typing", ({ from }) => {
       set((state) => ({
         typingUsers: { ...state.typingUsers, [from]: true },

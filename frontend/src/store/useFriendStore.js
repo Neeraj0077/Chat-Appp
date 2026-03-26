@@ -87,13 +87,11 @@ export const useFriendStore = create((set, get) => ({
         }
     },
 
-    // Called from socket event in Sidebar
     addIncomingRequest: (user) => {
         const { playFriendRequestSound } = useSound();
         set((state) => ({
             friendRequests: [...state.friendRequests, user],
         }));
-        // Play chime sound for friend request
         playFriendRequestSound();
     },
 }));

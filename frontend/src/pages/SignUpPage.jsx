@@ -35,11 +35,9 @@ const SignUpPage = () => {
   };
 
   return (
-    <div className="min-h-screen grid lg:grid-cols-2">
-      {/* left side */}
+    <div className="min-h-screen grid lg:grid-cols-2"> 
       <div className="flex flex-col justify-center items-center p-6 sm:p-12">
-        <div className="w-full max-w-md space-y-8">
-          {/* LOGO */}
+        <div className="w-full max-w-md space-y-8"> 
           <div className="text-center mb-8">
             <div className="flex flex-col items-center gap-2 group">
               <div
@@ -140,10 +138,7 @@ const SignUpPage = () => {
             </p>
           </div>
         </div>
-      </div>
-
-      {/* right side */}
-
+      </div> 
       <AuthImagePattern
         title="Join Us, Let's Chat!"
         subtitle="Connect with friends, share moments, and stay in touch with your loved ones."

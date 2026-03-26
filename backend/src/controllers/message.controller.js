@@ -174,7 +174,7 @@ export const sendMessage = async (req, res) => {
             imageUrl = uploadResponse.secure_url;
         }
 
-        // If receiver is online → delivered, else → sent
+        // If receiver is online - delivered, else - sent
         const receiverSocketId = getReceiverSocketId(receiverId);
         const status = receiverSocketId ? "delivered" : "sent";
 
