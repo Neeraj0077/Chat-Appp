@@ -11,7 +11,7 @@ const TypingIndicator = ({ user }) => (
   <div className="chat chat-start">
     <div className="chat-image avatar">
       <div className="size-10 rounded-full">
-        <img src={user.profilePic || "/public/person.png"} alt="typing" />
+        <img src={user.profilePic || "https://res.cloudinary.com/dpq0wpobg/image/upload/v1775223227/person_fn8yct.png"} alt="typing" />
       </div>
     </div>
     <div className="chat-bubble bg-base-300 flex items-center gap-1 py-3 px-4">
@@ -76,8 +76,8 @@ const ChatContainer = () => {
                   <img
                     src={
                       isMine
-                        ? authUser.profilePic || "/public/person.png"
-                        : selectedUser.profilePic || "/public/person.png"
+                        ? authUser.profilePic || "https://res.cloudinary.com/dpq0wpobg/image/upload/v1775223227/person_fn8yct.png"
+                        : selectedUser.profilePic || "https://res.cloudinary.com/dpq0wpobg/image/upload/v1775223227/person_fn8yct.png"
                     }
                     alt="profile pic"
                   />

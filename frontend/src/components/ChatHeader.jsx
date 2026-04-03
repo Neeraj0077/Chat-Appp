@@ -13,7 +13,7 @@ const ChatHeader = () => {
           {/* Avatar */}
           <div className="avatar">
             <div className="size-10 rounded-full relative">
-              <img src={selectedUser.profilePic || "/public/person.png"} alt={selectedUser.fullname} />
+              <img src={selectedUser.profilePic || "https://res.cloudinary.com/dpq0wpobg/image/upload/v1775223227/person_fn8yct.png"} alt={selectedUser.fullname} />
             </div>
           </div>
 

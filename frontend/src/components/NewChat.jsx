@@ -50,7 +50,7 @@ const NewChat = ({ onClose, onSelectUser }) => {
           >
             <div className="relative mx-auto lg:mx-0 shrink-0">
               <img
-                src={user.profilePic || "/avatar.png"}
+                src={user.profilePic || "https://res.cloudinary.com/dpq0wpobg/image/upload/v1775223227/person_fn8yct.png"}
                 alt={user.fullname}
                 className="size-12 object-cover rounded-full"
               />

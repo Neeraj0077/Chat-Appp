@@ -56,7 +56,7 @@ const FriendRequests = () => {
                             friendRequests.map((user) => (
                                 <div key={user._id} className="flex items-center gap-3 p-3 hover:bg-base-200 transition-colors">
                                     <img
-                                        src={user.profilePic || "/avatar.png"}
+                                        src={user.profilePic || "https://res.cloudinary.com/dpq0wpobg/image/upload/v1775223227/person_fn8yct.png"}
                                         alt={user.fullname}
                                         className="size-10 rounded-full object-cover shrink-0"
                                     />
