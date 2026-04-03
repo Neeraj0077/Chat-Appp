@@ -10,8 +10,8 @@ import { formatMessageTime } from "../lib/utils";
 const TypingIndicator = ({ user }) => (
   <div className="chat chat-start">
     <div className="chat-image avatar">
-      <div className="size-10 rounded-full border">
-        <img src={user.profilePic || "/avatar.png"} alt="typing" />
+      <div className="size-10 rounded-full">
+        <img src={user.profilePic || "/public/person.png"} alt="typing" />
       </div>
     </div>
     <div className="chat-bubble bg-base-300 flex items-center gap-1 py-3 px-4">
@@ -72,12 +72,12 @@ const ChatContainer = () => {
               className={`chat ${isMine ? "chat-end" : "chat-start"}`}
             >
               <div className="chat-image avatar">
-                <div className="size-10 rounded-full border">
+                <div className="size-10 rounded-full">
                   <img
                     src={
                       isMine
-                        ? authUser.profilePic || "/avatar.png"
-                        : selectedUser.profilePic || "/avatar.png"
+                        ? authUser.profilePic || "/public/person.png"
+                        : selectedUser.profilePic || "/public/person.png"
                     }
                     alt="profile pic"
                   />

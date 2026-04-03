@@ -18,13 +18,20 @@ export const useChatStore = create((set, get) => ({
   getUsers: async () => {
     set({ isUsersLoading: true });
     try {
-      const res = await axiosInstance.get("/messages/users");
+      const res = await axiosInstance.get("/messages/users");//fetching users from the database who have chatted with the logged in user  
       const users = Array.isArray(res.data) ? res.data : res.data.users || [];
 
       const lastMessages = {};
       users.forEach((u) => {
         if (u.lastMessage) lastMessages[u._id] = u.lastMessage;
       });
+      //users in the database
+      /*const users = [
+        {_id : "u1", name : "Neeraj", lastMessage : "Hey"}
+        {_id : "u2", name : "Pranjal", lastMessage : "i'm pranjal"}
+    ]*/
+      //After the code runs const lastMessages = {};
+      //{u1:"hey",u2:"i'm pranjal"}
 
       const sorted = [...users].sort((a, b) => {
         const aTime = a.lastMessage?.createdAt ? new Date(a.lastMessage.createdAt) : new Date(0);
@@ -32,7 +39,7 @@ export const useChatStore = create((set, get) => ({
         return bTime - aTime;
       });
 
-      set({ users: sorted, lastMessages });
+      set({ users: sorted, lastMessages : lastMessages });
     } catch (error) {
       toast.error(error.response?.data?.message || "Failed to load users");
     } finally {

@@ -14,7 +14,7 @@ const NewChat = ({ onClose, onSelectUser }) => {
   );
 
   const handleClose = () => {
-    setIsClosing(true);
+    setIsClosing(true); 
     setTimeout(() => onClose(), 250);
   };
 
