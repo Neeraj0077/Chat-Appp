@@ -4,10 +4,11 @@ import { useAuthStore } from "../store/useAuthStore";
 import { useFriendStore } from "../store/useFriendStore";
 import SidebarSkeleton from "./skeletons/SidebarSkeleton";
 import MessageStatus from "./Messagestatus";
-import { MessageSquarePlus, EllipsisVertical, Search } from "lucide-react";
+import { MessageSquarePlus, EllipsisVertical, Search, FileX } from "lucide-react";
 import NewChat from "./NewChat";
 import FriendRequests from "./Friendrequests";
 import VerticalElipseModal from "./VerticalElipseModal";
+import { formatMessageTime, formatMesasgeDate } from "../lib/utils";
 
 const Sidebar = () => {
   const { getUsers, users = [], selectedUser, setSelectedUser, isUsersLoading, unreadCounts, lastMessages, typingUsers } = useChatStore();
@@ -81,6 +82,8 @@ const Sidebar = () => {
           const lastMsgIsMine = lastMsg?.senderId?.toString() === authUser?._id?.toString();
           const isUserTyping = typingUsers?.[user._id] || false;
 
+          console.log(lastMsg);
+
           return (
             <button
               key={user._id}
@@ -103,9 +106,10 @@ const Sidebar = () => {
               </div>
 
               <div className="hidden lg:flex flex-1 flex-col text-left min-w-0 cursor-pointer">
-                <div className="flex items-center justify-between">
-                  <span className={`font-medium truncate ${unread > 0 ? "text-base-content" : ""}`}>
+                <div className="">
+                  <span className={`font-medium truncate ${unread > 0 ? "text-base-content" : ""} flex items-center justify-between`}>
                     {user.fullname}
+                    <span className="text-[10px] text-base-content/40 text-right">{!lastMsg || formatMesasgeDate(lastMsg?.createdAt)}</span>
                   </span>
                 </div>
  
