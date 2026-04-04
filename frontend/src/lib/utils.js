@@ -27,7 +27,5 @@ export function formatMesasgeDate(date) {
     });
   } else {
     return new Date(date).toLocaleDateString('en-US', { weekday: 'long' });
-  }
-
-
+  } 
 }

@@ -63,34 +63,32 @@ const ChatContainer = () => {
       <ChatHeader />
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {safeMessages.map((message) => {
+        {safeMessages.map((message, index) => {
           const isMine = message.senderId === authUser._id;
+          const prevMessage = safeMessages[index - 1];
+          const isConsecutive = prevMessage && prevMessage.senderId === message.senderId;
 
           return (
             <div
               key={message._id}
-              className={`chat ${isMine ? "chat-end" : "chat-start"}`}
+              className={`chat ${isMine ? "chat-end" : "chat-start"} ${isConsecutive ? "-mt-7" : ""}`}
             >
               <div className="chat-image avatar">
-                <div className="size-10 rounded-full">
-                  <img
-                    src={
-                      isMine
-                        ? authUser.profilePic || "https://res.cloudinary.com/dpq0wpobg/image/upload/v1775223227/person_fn8yct.png"
-                        : selectedUser.profilePic || "https://res.cloudinary.com/dpq0wpobg/image/upload/v1775223227/person_fn8yct.png"
-                    }
-                    alt="profile pic"
-                  />
+                <div className="size-10 rounded-full ">
+                  {!isConsecutive && (
+                    <img
+                      src={
+                        isMine
+                          ? authUser.profilePic || "https://res.cloudinary.com/dpq0wpobg/image/upload/v1775223227/person_fn8yct.png"
+                          : selectedUser.profilePic || "https://res.cloudinary.com/dpq0wpobg/image/upload/v1775223227/person_fn8yct.png"
+                      }
+                      alt="profile pic"
+                    />)}
                 </div>
               </div>
 
-              <div className="chat-header mb-1">
-                <time className="text-xs opacity-50 ml-1">
-                  {formatMessageTime(message.createdAt)}
-                </time>
-              </div>
-
-              <div className="chat-bubble">
+              <div className={`chat-bubble py-1 ${isConsecutive ? "before:hidden" : ""  // hide tail
+                } ${isMine ? "rounded-tl-lg rounded-tr-lg rounded-bl-lg" : "rounded-tl-lg rounded-tr-lg rounded-br-lg"}`}>
                 {message.image && (
                   <img
                     src={message.image}
@@ -102,6 +100,9 @@ const ChatContainer = () => {
                 {message.text && (
                   <span className="inline">
                     {message.text}
+                    <time className="text-[10px] opacity-50 ml-1">
+                      {formatMessageTime(message.createdAt)}
+                    </time>
                     {isMine && (
                       <span className="inline-flex items-end ml-1.5 translate-y-0.5">
                         <MessageStatus status={message.status} />
