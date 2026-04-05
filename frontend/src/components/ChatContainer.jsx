@@ -6,6 +6,8 @@ import MessageSkeleton from "./skeletons/MessageSkeleton";
 import MessageStatus from "./Messagestatus";
 import { useAuthStore } from "../store/useAuthStore";
 import { formatMessageTime } from "../lib/utils";
+import { useState } from 'react';
+import { ChevronDown } from "lucide-react";
 
 const TypingIndicator = ({ user }) => (
   <div className="chat chat-start">
@@ -35,6 +37,13 @@ const ChatContainer = () => {
   const { authUser } = useAuthStore();
   const messageEndRef = useRef(null);
   const safeMessages = Array.isArray(messages) ? messages : [];
+  const [openMenuId, setOpenMenuId] = useState(null)
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleDeleteMessage = async (messageId) => {
+    await deleteMessage(messageId);
+    setOpenMenuId(null);
+  };
 
   useEffect(() => {
     getMessages(selectedUser._id);
@@ -46,7 +55,7 @@ const ChatContainer = () => {
     if (messageEndRef.current) {
       messageEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [messages, isTyping]);
+  }, [messages, isTyping]); 
 
   if (isMessagesLoading) {
     return (
@@ -57,6 +66,7 @@ const ChatContainer = () => {
       </div>
     );
   }
+
 
   return (
     <div className="flex-1 flex flex-col overflow-auto">
@@ -71,7 +81,7 @@ const ChatContainer = () => {
           return (
             <div
               key={message._id}
-              className={`chat ${isMine ? "chat-end" : "chat-start"} ${isConsecutive ? "-mt-7" : ""}`}
+              className={`chat ${isMine ? "chat-end" : "chat-start"} ${isConsecutive ? "-mt-7" : ""} group`}
             >
               <div className="chat-image avatar">
                 <div className="size-10 rounded-full ">
@@ -85,10 +95,15 @@ const ChatContainer = () => {
                       alt="profile pic"
                     />)}
                 </div>
-              </div>
+              </div> 
 
-              <div className={`chat-bubble py-1 ${isConsecutive ? "before:hidden" : ""  // hide tail
+              <div className={`chat-bubble py-1 relative ${isConsecutive ? "before:hidden" : ""  // hide tail
                 } ${isMine ? "rounded-tl-lg rounded-tr-lg rounded-bl-lg" : "rounded-tl-lg rounded-tr-lg rounded-br-lg"}`}>
+
+                <button onClick={() => setOpenMenuId(message._id)} className={`absolute top-2 cursor-pointer opacity-0 group-hover:opacity-100 transition-opacity duration-600 ${isMine ? "-left-5" : "-right-5"}`} >
+                  <ChevronDown size={14} />
+                </button> 
+                
                 {message.image && (
                   <img
                     src={message.image}

@@ -42,7 +42,7 @@ const MessageInput = () => {
     // Emit typing stop after 2s of no keystroke
     typingTimeoutRef.current = setTimeout(() => {
       socket.emit("stopTyping", { to: selectedUser._id });
-    }, 2000);
+    }, 1000);
   };
 
   const handleSendMessage = async (e) => {
