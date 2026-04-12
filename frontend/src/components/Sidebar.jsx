@@ -103,6 +103,7 @@ const Sidebar = () => {
                 {onlineUsers.includes(user._id) && (
                   <span className="absolute bottom-0 right-0 size-3 bg-primary rounded-full ring-2 ring-base-100" />
                 )}
+                
               </div>
 
               <div className="hidden lg:flex flex-1 flex-col text-left min-w-0 cursor-pointer">

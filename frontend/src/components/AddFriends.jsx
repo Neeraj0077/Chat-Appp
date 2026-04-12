@@ -60,7 +60,7 @@ const AddFriends = ({ onClose }) => {
 
                 <div className="p-4">
                     <div className="relative">
-                        <Search className="absolute left-3 top-2.5 size-4 text-base-content/40" />
+                        <Search className="absolute left-3 top-3.5 size-4 text-base-content/40" />
                         <input
                             type="text"
                             placeholder="Search people by name..."
@@ -81,12 +81,12 @@ const AddFriends = ({ onClose }) => {
                         <div className="text-center text-base-content/40 py-8 text-sm">
                             {query ? "No users found" : "Start typing to search for people"}
                         </div>
-                    ) : (
-                        searchResults.map((user) => (
+                    ) :(
+                        searchResults.filter((user) => user.status !== "friend").map((user) => (
                             <div key={user._id} className="flex items-center gap-3 p-3 rounded-xl hover:bg-base-200 transition-colors">
                                 <div className="relative shrink-0">
                                     <img
-                                        src={user.profilePic || "/avatar.png"}
+                                        src={user.profilePic || "https://res.cloudinary.com/dpq0wpobg/image/upload/v1775223227/person_fn8yct.png"}
                                         alt={user.fullname}
                                         className="size-11 rounded-full object-cover"
                                     />
@@ -101,7 +101,7 @@ const AddFriends = ({ onClose }) => {
                                 {getActionButton(user)}
                             </div>
                         ))
-                    )}
+                     ) }
                 </div>
             </div>
         </div>
