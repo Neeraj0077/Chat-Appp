@@ -81,7 +81,7 @@ const AddFriends = ({ onClose }) => {
                         <div className="text-center text-base-content/40 py-8 text-sm">
                             {query ? "No users found" : "Start typing to search for people"}
                         </div>
-                    ) :(
+                    ) : (
                         searchResults.filter((user) => user.status !== "friend").map((user) => (
                             <div key={user._id} className="flex items-center gap-3 p-3 rounded-xl hover:bg-base-200 transition-colors">
                                 <div className="relative shrink-0">
@@ -101,7 +101,7 @@ const AddFriends = ({ onClose }) => {
                                 {getActionButton(user)}
                             </div>
                         ))
-                     ) }
+                    )}
                 </div>
             </div>
         </div>
